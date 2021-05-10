@@ -23,7 +23,7 @@ var ps string = "530 Incorrect password, not logged in\n"
 //----------------------//
 ```
 ### Download
-> go get github.com/farinap5/FTPHoney.git
+> go get github.com/farinap5/FTPHoney
 ### Run
 > go run ftphoney.go
 ### Compile and run
