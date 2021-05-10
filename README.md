@@ -1,12 +1,12 @@
 <h1 align="center">FTPHoney</h1>
-<h3 align="center">Fake FTP </h3>
+<h3 align="center">Fake FTP - Honeypot</h3>
 
 ---
 Project of a **simple** fake FTP service made in Golang.
 
-"No log file yet".
+A sqlite file is generated for the insertion of the logs. 
 
-configure in the code file.
+### Configure in the code file.
 ```
 //-------Configure-------//
 var banner string = "220 (vsFTPd 3.0.3)"+"\n"
@@ -20,9 +20,13 @@ var host string = "0.0.0.0:2121"
 var ps string = "530 Incorrect password, not logged in\n"
 //----------------------//
 ```
-### Rum
+### Download
+> go get github.com/farinap5/FTPHoney.git
+### Run
 > go run ftphoney.go
 ### Compile and run
 > go build ftphoney.go
 > 
-> ./ftphoney
+> ./FTP-Honey
+
+!Too many threads may cause memory corruption in SQLite!
