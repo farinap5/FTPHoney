@@ -4,7 +4,9 @@
 ---
 Project of a **simple** fake FTP service made in Golang.
 
-A sqlite file is generated for the insertion of the logs. 
+A sqlite file is generated for the insertion of the logs.
+
+!Too many threads may cause memory corruption in SQLite!
 
 ### Configure in the code file.
 ```
@@ -27,6 +29,5 @@ var ps string = "530 Incorrect password, not logged in\n"
 ### Compile and run
 > go build ftphoney.go
 > 
-> ./FTP-Honey
+> ./ftphoney
 
-!Too many threads may cause memory corruption in SQLite!
