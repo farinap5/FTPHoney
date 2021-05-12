@@ -130,7 +130,7 @@ func loging(database *sql.DB,host string,dt string,user string,passkey string) {
 }
 func show_options(apc bool,lc bool) {
 	if (apc == true) {
-		println("- All tested pessword are correct:",apc)
+		println("- All tested password are correct:",apc)
 	}
 	if (lc == true) {
 		println("- Show connections in verbose mode:",lc)
@@ -141,7 +141,7 @@ func help_m() {
 	t := tabby.New()
 	t.AddHeader("COMMAND","DESCRIPTION","REQUIRED")
 	t.AddLine("-l","Local host and port. ip:port","No")
-	t.AddLine("-a","All tested pessword are correct.","No")
+	t.AddLine("-a","All tested password are correct.","No")
 	t.AddLine("-v","Show conections in verbose mode.","No")
 	t.AddLine("-h","Help menu.")
 	t.Print()
