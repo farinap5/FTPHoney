@@ -8,19 +8,14 @@ A sqlite file is generated for the insertion of the logs.
 
 !Too many threads may cause memory corruption in SQLite!
 
-### Configure in the code file.
+#### Help
 ```
-//-------Configure-------//
-var banner string = "220 (vsFTPd 3.0.3)"+"\n"
-var host string = "0.0.0.0:2121"
-
-//-------Passwords------//
-// All tested passwords are correct.
-//var ps string = "230 Password ok, continue\n"
-
-// No correct password.
-var ps string = "530 Incorrect password, not logged in\n"
-//----------------------//
+COMMAND  DESCRIPTION                       REQUIRED
+-------  -----------                       --------
+-l       Local host and port. ip:port      No
+-a       All tested pessword are correct.  No
+-v       Show conections in verbose mode.  No
+-h       Help menu.
 ```
 ### Download
 > go get github.com/farinap5/FTPHoney
