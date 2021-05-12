@@ -13,7 +13,7 @@ A sqlite file is generated for the insertion of the logs.
 COMMAND  DESCRIPTION                       REQUIRED
 -------  -----------                       --------
 -l       Local host and port. ip:port      No
--a       All tested pessword are correct.  No
+-a       All tested password are correct.  No
 -v       Show conections in verbose mode.  No
 -h       Help menu.
 ```
