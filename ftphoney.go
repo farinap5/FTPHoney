@@ -3,7 +3,9 @@ package main
 import (
 	"bufio"
 	"database/sql"
+	"flag"
 	"fmt"
+	"github.com/cheynewallace/tabby"
 	_"github.com/mattn/go-sqlite3"
 	"log"
 	"net"
@@ -12,27 +14,41 @@ import (
 )
 
 func main() {
-	database,_ := sql.Open("sqlite3","./logs.db")
-	setdb(database)
-	hp(database)
-}
-// Honeypot starter service.
-func hp(database *sql.DB) {
-	//-------Configure-------//
-	var banner string = "220 (vsFTPd 3.0.3)"+"\n"
-	var host string = "0.0.0.0:2121"
-	//-------Passwords------//
-	// All tested passwords are correct.
-	//var ps string = "230 Password ok, continue\n"
+	// All password are correct
+	var apc = flag.Bool("a",false,"All tested passwords are correct.")
+	// log connectons
+	var lc = flag.Bool("v",false,"Show conections in verbose mode.")
+	// Host
+	var h = flag.String("l","0.0.0.0:2121","Local Host ip:port. ")
+	var help = flag.Bool("h",false,"Help menu.")
+	flag.Parse()
 
-	// No correct password.
-	var ps string = "530 Incorrect password, not logged in\n"
-	//----------------------//
-	init_server(database,host,banner,ps)
+	if (*help == true) {
+		help_m()
+	} else {
+		database,_ := sql.Open("sqlite3","./logs.db")
+		show_options(*apc,*lc)
+		setdb(database)
+		hp(*lc,*h,*apc,database)
+	}
+}
+
+// Honeypot starter service.
+func hp(lc bool,host string,apc bool,database *sql.DB) {
+	var ps string
+	var banner string = "220 (vsFTPd 3.0.3)"+"\n"
+
+	if (apc == true) {
+		ps = "230 Password ok, continue\n"
+	} else {
+		ps = "530 Incorrect password, not logged in\n"
+	}
+
+	init_server(lc,database,host,banner,ps)
 }
 
 // Init server and wait for clients.
-func init_server(database *sql.DB,host string,banner string,ps string) {
+func init_server(lc bool,database *sql.DB,host string,banner string,ps string) {
 	var id int = 1
 	serve, err := net.Listen("tcp", host)
 	if err != nil {
@@ -46,7 +62,11 @@ func init_server(database *sql.DB,host string,banner string,ps string) {
 			log.Fatal(err.Error())
 		}
 		h := client.RemoteAddr()
-		println(id,"- New Connection -> ",h.String())
+
+		if (lc == true) {
+			println(id,"- New Connection -> ",h.String())
+		}
+
 		go handle_conn(database,client, id, banner, ps)
 		id++
 	}
@@ -107,4 +127,22 @@ func ctime() string {
 func loging(database *sql.DB,host string,dt string,user string,passkey string) {
 	state,_ := database.Prepare("INSERT INTO frst (datetime,IP,username,password) VALUES (?,?,?,?)")
 	state.Exec(dt,host,user,passkey)
+}
+func show_options(apc bool,lc bool) {
+	if (apc == true) {
+		println("- All tested pessword are correct:",apc)
+	}
+	if (lc == true) {
+		println("- Show connections in verbose mode:",lc)
+	}
+}
+
+func help_m() {
+	t := tabby.New()
+	t.AddHeader("COMMAND","DESCRIPTION","REQUIRED")
+	t.AddLine("-l","Local host and port. ip:port","No")
+	t.AddLine("-a","All tested pessword are correct.","No")
+	t.AddLine("-v","Show conections in verbose mode.","No")
+	t.AddLine("-h","Help menu.")
+	t.Print()
 }
