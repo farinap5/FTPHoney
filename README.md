@@ -14,7 +14,7 @@ COMMAND  DESCRIPTION                       REQUIRED
 -------  -----------                       --------
 -l       Local host and port. ip:port      No
 -a       All tested password are correct.  No
--v       Show conections in verbose mode.  No
+-v       Show connections in verbose mode.  No
 -h       Help menu.
 ```
 ### Download
