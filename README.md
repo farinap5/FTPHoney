@@ -10,10 +10,10 @@ A sqlite file is generated for the insertion of the logs.
 
 #### Help
 ```
-COMMAND  DESCRIPTION                       REQUIRED
--------  -----------                       --------
--l       Local host and port. ip:port      No
--a       All tested password are correct.  No
+COMMAND  DESCRIPTION                        REQUIRED
+-------  -----------                        --------
+-l       Local host and port. ip:port       No
+-a       All tested password are correct.   No
 -v       Show connections in verbose mode.  No
 -h       Help menu.
 ```
