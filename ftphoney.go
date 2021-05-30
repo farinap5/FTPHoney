@@ -21,20 +21,22 @@ func main() {
 	// Host
 	var h = flag.String("l","0.0.0.0:2121","Local Host ip:port. ")
 	var help = flag.Bool("h",false,"Help menu.")
+
+	var lg = flag.Bool("log",false,"Write logs.")
 	flag.Parse()
 
 	if (*help == true) {
 		help_m()
 	} else {
 		database,_ := sql.Open("sqlite3","./logs.db")
-		show_options(*apc,*lc)
+		show_options(*apc,*lc,*lg)
 		setdb(database)
-		hp(*lc,*h,*apc,database)
+		hp(*lc,*h,*apc,database,*lg)
 	}
 }
 
 // Honeypot starter service.
-func hp(lc bool,host string,apc bool,database *sql.DB) {
+func hp(lc bool,host string,apc bool,database *sql.DB,lg bool) {
 	var ps string
 	var banner string = "220 (vsFTPd 3.0.3)"+"\n"
 
@@ -44,11 +46,11 @@ func hp(lc bool,host string,apc bool,database *sql.DB) {
 		ps = "530 Incorrect password, not logged in\n"
 	}
 
-	init_server(lc,database,host,banner,ps)
+	init_server(lc,database,host,banner,ps,lg)
 }
 
 // Init server and wait for clients.
-func init_server(lc bool,database *sql.DB,host string,banner string,ps string) {
+func init_server(lc bool,database *sql.DB,host string,banner string,ps string,lg bool) {
 	var id int = 1
 	serve, err := net.Listen("tcp", host)
 	if err != nil {
@@ -67,11 +69,13 @@ func init_server(lc bool,database *sql.DB,host string,banner string,ps string) {
 			println(id,"- New Connection -> ",h.String())
 		}
 
-		go handle_conn(database,client, id, banner, ps)
+		go handle_conn(database,client, id, banner, ps,lg)
 		id++
 	}
 }
-func handle_conn(database *sql.DB,conn net.Conn,id int, banner string, ps string) {
+
+// Handle connection, sending and receiving data.
+func handle_conn(database *sql.DB,conn net.Conn,id int, banner string, ps string,lg bool) {
 	conn.Write([]byte(banner))
 
 	data, err := bufio.NewReader(conn).ReadString('\r')
@@ -99,12 +103,15 @@ func handle_conn(database *sql.DB,conn net.Conn,id int, banner string, ps string
 	}
 	conn.Close()
 
-	d := ctime()
-	h := conn.RemoteAddr()
-	hs := h.String()
-	usr := ss0[1]
-	pssk := ss1[1]
-	loging(database,hs,d,usr,pssk)
+	if (lg == true) {
+		d := ctime()
+		h := conn.RemoteAddr()
+		hs := h.String()
+		usr := ss0[1]
+		pssk := ss1[1]
+		loging(database,hs,d,usr,pssk)
+	}
+
 
 }
 
@@ -128,21 +135,29 @@ func loging(database *sql.DB,host string,dt string,user string,passkey string) {
 	state,_ := database.Prepare("INSERT INTO frst (datetime,IP,username,password) VALUES (?,?,?,?)")
 	state.Exec(dt,host,user,passkey)
 }
-func show_options(apc bool,lc bool) {
+
+// Show chosen options.
+func show_options(apc bool,lc bool,lg bool) {
 	if (apc == true) {
 		println("- All tested password are correct:",apc)
 	}
 	if (lc == true) {
 		println("- Show connections in verbose mode:",lc)
 	}
+	if (lg == true) {
+		println("- All logs will be written:",lc)
+	}
 }
 
+
+// Help menu shown as a table.
 func help_m() {
 	t := tabby.New()
 	t.AddHeader("COMMAND","DESCRIPTION","REQUIRED")
-	t.AddLine("-l","Local host and port. ip:port","No")
+	t.AddLine("-l","Local host and port. -l ip:port","No")
 	t.AddLine("-a","All tested password are correct.","No")
 	t.AddLine("-v","Show conections in verbose mode.","No")
+	t.AddLine("-log","Write logs.","No")
 	t.AddLine("-h","Help menu.")
 	t.Print()
 }
