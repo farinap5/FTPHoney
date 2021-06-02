@@ -146,6 +146,7 @@ func show_options(apc bool,lc bool,lg bool) {
 	}
 	if (lg == true) {
 		println("- All logs will be written:",lc)
+		println("!Too many threads may cause memory corruption in SQLite!")
 	}
 }
 
