@@ -4,9 +4,7 @@
 ---
 Project of a **simple** fake FTP service made in Golang.
 
-A sqlite file is generated for the insertion of the logs.
-
-!Too many threads may cause memory corruption in SQLite!
+A sqlite file is generated for the insertion of the logs, however !too many threads may cause memory corruption in SQLite!
 
 #### Help
 ```
